@@ -17,20 +17,17 @@ mongoClient.connect().then(() => {
 });
 
 app.post("/participants", async (req, res) => {
-    const {name} = req.headers;
+    const {name} = req.body;
 
     if(!name || name.length === 0){
         return res.sendStatus(422);
     }
 
     try {
-        console.log(process.env.MONGO_URI)
         const participants = await db.collection('participants').findOne({name});
         if(!!participants){
             return res.sendStatus(409)
         }
-
-        console.log('esperando o primeiro waint')
 
         await db.collection('participants').insertOne({name, lastStatus: Date.now()});
         const userLogin = {
@@ -41,7 +38,6 @@ app.post("/participants", async (req, res) => {
             time: dayjs().format("HH:mm:ss")
         }
         await db.collection('messages').insertOne(userLogin)
-        console.log('acabou')
         res.sendStatus(201)
     } catch (error) {
         res.sendStatus(500)
@@ -57,6 +53,8 @@ app.get("/participants", async (req, res) => {
         res.sendStatus(500)
     }
 })
+
+
 
 app.listen(5000, () => {
     console.log('Listen on port 5000')
