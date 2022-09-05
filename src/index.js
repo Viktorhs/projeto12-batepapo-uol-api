@@ -153,7 +153,7 @@ function removeUser(){
             const users = await db.collection("participants").find().toArray();
 
             if(users.length === 0 ){
-                return console.log('tem nada')
+                return
             }
 
             for(let i = 0 ; i < users.length ; i++){
@@ -229,7 +229,6 @@ app.put("/messages/:IdMessage", async (req, res) => {
         res.sendStatus(201);
 
     } catch (error) {
-        console.log(error)
         res.status(500).send(error)
     }
 })
